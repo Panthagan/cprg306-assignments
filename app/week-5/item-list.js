@@ -56,10 +56,10 @@ const ShoppingList = () => {
       <h1 className="text-2xl font-bold mb-4">Shopping List</h1>
       <div className="mb-4">
         Sort by:
-        <button onClick={() => handleSortBy('name')} className={`mx-2 ${sortBy === 'name' ? 'bg-orange-300' : 'bg-orange-100'}`}>Name</button>
-        <button onClick={() => handleSortBy('category')} className={`${sortBy === 'category' ? 'bg-orange-300' : 'bg-orange-100'}`}>Category</button>
-        <button onClick={() => handleSortBy('grouped')} className={`${sortBy === 'grouped' ? 'bg-orange-300' : 'bg-orange-100'}`}>Grouped Category</button>
-      </div>
+        <button onClick={() => handleSortBy('name')} className={`mx-2 ${sortBy === 'name' ? 'bg-orange-300' : 'bg-orange-300'}`}>Name</button>
+    <button onClick={() => handleSortBy('category')} className={`mr-2 ${sortBy === 'category' ? 'bg-orange-300' : 'bg-orange-300'}`}>Category</button>
+    <button onClick={() => handleSortBy('grouped')} className={`${sortBy === 'grouped' ? 'bg-orange-300' : 'bg-orange-300'}`}>Grouped Category</button>
+  </div>
       {renderItems()}
     </div>
   );
