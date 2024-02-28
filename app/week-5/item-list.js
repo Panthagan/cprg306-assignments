@@ -1,12 +1,16 @@
 'use client'; 
 import React, { useState } from 'react';
-import items from './items.json';
 import Item from './item';
+import itemsData from './items.json';
 
-const ItemList = () => {
+const ShoppingList = () => {
   const [sortBy, setSortBy] = useState('name');
 
-  const sortedItems = items.slice().sort((a, b) => {
+  const handleSortBy = (value) => {
+    setSortBy(value);
+  };
+
+  const sortedItems = [...itemsData].sort((a, b) => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
     } else if (sortBy === 'category') {
@@ -15,68 +19,50 @@ const ItemList = () => {
     return 0;
   });
 
-  const groupItemsByCategory = sortedItems.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+  const groupByCategory = () => {
+    const groupedItems = sortedItems.reduce((acc, item) => {
+      acc[item.category] = [...(acc[item.category] || []), item];
+      return acc;
+    }, {});
+    return groupedItems;
+  };
+
+  const renderItems = () => {
+    if (sortBy === 'grouped') {
+      const groupedItems = groupByCategory();
+      return Object.entries(groupedItems).map(([category, items]) => (
+        <div key={category}>
+          <h2 className="font-bold capitalize">{category}</h2>
+          <ul>
+            {items.map((item, index) => (
+              <Item key={index} name={item.name} quantity={item.quantity} category={item.category} />
+            ))}
+          </ul>
+        </div>
+      ));
+    } else {
+      return (
+        <ul>
+          {sortedItems.map((item, index) => (
+            <Item key={index} name={item.name} quantity={item.quantity} category={item.category} />
+          ))}
+        </ul>
+      );
     }
-    acc[item.category].push(item);
-    return acc;
-  }, {});
-
-  const sortedCategories = Object.keys(groupItemsByCategory).sort();
-
-  const renderItemsByCategory = () => {
-    return sortedCategories.map(category => (
-      <div key={category}>
-        <h2 className="mt-4 mb-2 capitalize">{category}</h2>
-        {groupItemsByCategory[category].map(item => (
-          <Item key={item.id} name={item.name} quantity={item.quantity} category={item.category} />
-        ))}
-      </div>
-    ));
   };
 
   return (
     <div>
-      <div className="flex justify-center mb-4">
-        <button
-          className={`mr-2 px-3 py-1 rounded ${
-            sortBy === 'name' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-          }`}
-          onClick={() => setSortBy('name')}
-        >
-          Sort by Name
-        </button>
-        <button
-          className={`mr-2 px-3 py-1 rounded ${
-            sortBy === 'category' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-          }`}
-          onClick={() => setSortBy('category')}
-        >
-          Sort by Category
-        </button>
-        <button
-          className={`px-3 py-1 rounded ${
-            sortBy === 'groupedCategory' ? 'bg-blue-500 text-white' : 'bg-gray-200'
-          }`}
-          onClick={() => setSortBy('groupedCategory')}
-        >
-          Grouped Category
-        </button>
+      <h1 className="text-2xl font-bold mb-4">Shopping List</h1>
+      <div className="mb-4">
+        Sort by:
+        <button onClick={() => handleSortBy('name')} className={`mx-2 ${sortBy === 'name' ? 'bg-orange-300' : 'bg-orange-100'}`}>Name</button>
+        <button onClick={() => handleSortBy('category')} className={`${sortBy === 'category' ? 'bg-orange-300' : 'bg-orange-100'}`}>Category</button>
+        <button onClick={() => handleSortBy('grouped')} className={`${sortBy === 'grouped' ? 'bg-orange-300' : 'bg-orange-100'}`}>Grouped Category</button>
       </div>
-      {sortBy === 'groupedCategory' ? (
-        renderItemsByCategory()
-      ) : (
-        <ul>
-          {sortedItems.map(item => (
-            <li key={item.id}>
-              <Item name={item.name} quantity={item.quantity} category={item.category} />
-            </li>
-          ))}
-        </ul>
-      )}
+      {renderItems()}
     </div>
   );
 };
 
-export default ItemList;
+export default ShoppingList;
