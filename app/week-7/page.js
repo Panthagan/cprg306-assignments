@@ -1,36 +1,40 @@
-"use client";
-import React, { useState } from "react";
-import ItemList from "./item-list";
-import NewItem from "./new-item";
-import itemsData from "./items.json";
-import MealIdeas from "./meal-ideas";
+"use client"
+import React, { useState } from 'react';
+import NewItem from './new-item';
+import ItemList from './item-list';
+import MealIdeas from './meal-ideas';
+import itemsData from './items.json';
 
 const Page = () => {
-  const [items, setItems] = useState(itemsData);
-  const [selectedItemName, setSelectedItemName] = useState("");
+    const [items, setItems] = useState(itemsData);
+    const [selectedItemName, setSelectedItemName] = useState('');
 
-  const handleItemSelect = (itemName) => {
-    setSelectedItemName(itemName);
-  };
+    const handleAddItem = (newItem) => {
+        const newId = Date.now().toString();
+        const itemWithId = { ...newItem, id: newId };
+        setItems([...items, itemWithId]);
+    };
 
-  const handleAddItem = (newItem) => {
-    setItems([...items, newItem]);
-  };
+    const handleItemSelect = (item) => {
+        const itemName = item.name.split(',')[0].trim();
+        const cleanedItemName = itemName.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|�[�-�]|�[�-�]|[\u2011-\u26FF]|�[�-�])/g, '');
+        setSelectedItemName(cleanedItemName);
+    };
 
-  return (
-    <main>
-      <div className="  pr-4  ">
-        <h1 className="text-2xl font-bold mb-4 text-white">Shopping List</h1>
-        <h3 className="text-xl font- text-white">Add New Item</h3>
-        <NewItem onAddItem={handleAddItem} />
-        <ItemList items={items} onItemSelect={handleItemSelect} />
-      </div>
-      <div>
-        <h1 className="text-2xl font-bold mb-4 text-black">Meal Ideas</h1>
-        <MealIdeas ingredient={selectedItemName} />
-      </div>
-    </main>
-  );
+    return (
+        <main className="bg-gray-100 p-4">
+            <h1 className="text-2xl font-bold text-black text-center mb-4">Shopping List</h1>
+            <div className="flex">
+                <div className="w-1/2">
+                    <NewItem onAddItem={handleAddItem} />
+                    <ItemList items={items} onItemSelect={handleItemSelect} />
+                </div>
+                <div className="w-1/2">
+                    <MealIdeas ingredient={selectedItemName} />
+                </div>
+            </div>
+        </main>
+    );
 };
 
 export default Page;
