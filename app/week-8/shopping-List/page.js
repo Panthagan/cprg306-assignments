@@ -16,10 +16,13 @@ const Page = () => {
     };
 
     const handleItemSelect = (item) => {
-        const itemName = item.name.split(',')[0].trim();
-        const cleanedItemName = itemName.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|�[�-�]|�[�-�]|[\u2011-\u26FF]|�[�-�])/g, '');
-        setSelectedItemName(cleanedItemName);
-    };
+        if (item.Name) {
+          const itemName = item.Name.split(',')[0].trim();
+          const cleanedItemName = itemName.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|�[�-�]|�[�-�]|[\u2011-\u26FF]|�[�-�])/g, '');
+          setSelectedItemName(cleanedItemName);
+        }
+      };
+      
 
     return (
         <main className="bg-gray-100 p-4">
